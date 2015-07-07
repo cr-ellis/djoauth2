@@ -4,10 +4,6 @@ from urlparse import urlparse
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-try:
-  from django.http.request import absolute_http_url_re
-except ImportError:
-  from django.http import absolute_http_url_re
 from django.shortcuts import render
 from django.forms import Form
 from django.views.decorators.http import require_http_methods
@@ -175,7 +171,8 @@ class AuthorizationCodeGenerator(object):
     #     [RFC3986] Section 4.3.
     #
     redirect_uri = self.client.redirect_uri or self.request_redirect_uri
-    if not absolute_http_url_re.match(redirect_uri):
+    if not ( redirect_url.startswith('http://') 
+	or redirect_url.startswith('https://') ):
       raise InvalidRequest('"redirect_uri" must be absolute')
 
     # From http://tools.ietf.org/html/rfc6749#section-3.1.2 :
