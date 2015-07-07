@@ -33,19 +33,19 @@ def random_string(length, charset):
 
 
 def make_bearer_token(length):
-  return lambda: random_string(length, BEARER_TOKEN_CHARSET)
+  return random_string(length, BEARER_TOKEN_CHARSET)
 
 
 def make_authorization_code(length):
-  return lambda: random_string(length, AUTHORIZATION_CODE_CHARSET)
+  return random_string(length, AUTHORIZATION_CODE_CHARSET)
 
 
 def make_client_secret(length):
-  return lambda: random_string(length, CLIENT_SECRET_CHARSET)
+  return random_string(length, CLIENT_SECRET_CHARSET)
 
 
 def make_client_key(length):
-  return lambda: random_string(length, CLIENT_KEY_CHARSET)
+  return random_string(length, CLIENT_KEY_CHARSET)
 
 
 def update_parameters(url, parameters, encoding='utf8'):
