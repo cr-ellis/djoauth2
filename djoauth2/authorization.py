@@ -171,8 +171,8 @@ class AuthorizationCodeGenerator(object):
     #     [RFC3986] Section 4.3.
     #
     redirect_uri = self.client.redirect_uri or self.request_redirect_uri
-    if not ( redirect_url.startswith('http://') 
-	or redirect_url.startswith('https://') ):
+    if not ( redirect_uri.startswith('http://') 
+	or redirect_uri.startswith('https://') ):
       raise InvalidRequest('"redirect_uri" must be absolute')
 
     # From http://tools.ietf.org/html/rfc6749#section-3.1.2 :
