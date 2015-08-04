@@ -15,7 +15,7 @@ from djoauth2.helpers import update_parameters
 from djoauth2.models import AuthorizationCode
 from djoauth2.models import Client
 from djoauth2.models import Scope
-
+from django.db import IntegrityError
 
 class AuthorizationCodeGenerator(object):
   """ Allows easy authorization request validation, code generation, and
@@ -329,12 +329,21 @@ class AuthorizationCodeGenerator(object):
     when the user grants the Client's authorization request. The request is
     assumed to have successfully been vetted by the :py:meth:`validate` method.
     """
-
-    new_authorization_code = AuthorizationCode.objects.create(
-        user=self.user,
-        client=self.client,
-        redirect_uri=(self.request_redirect_uri if self.request_redirect_uri else self.redirect_uri)
-    )
+    try:
+        new_authorization_code = AuthorizationCode.objects.create(
+            user=self.user,
+            client=self.client,
+            redirect_uri=(self.request_redirect_uri if self.request_redirect_uri else self.redirect_uri)
+        )
+    except IntegrityError:
+        # this should never be happening...
+        from djoauth2.helpers import make_authorization_code
+	new_authorization_code = AuthorizationCode.objects.create(
+	    user=self.user,
+            client=self.client,
+            value=make_authorization_code(settings.DJOAUTH2_AUTHORIZATION_CODE_LENGTH),
+	    redirect_uri=(self.request_redirect_uri if self.request_redirect_uri else self.redirect_uri)
+        )
     new_authorization_code.scopes = self.valid_scope_objects
     new_authorization_code.save()
 
