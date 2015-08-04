@@ -1,6 +1,7 @@
 # coding: utf-8
 import json
 from base64 import b64decode
+import urllib
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -225,7 +226,7 @@ def generate_access_token_from_authorization_code(request, client):
 
   try:
     authorization_code = AuthorizationCode.objects.get(
-        value=authorization_code_value,
+        value=urllib.unquote(authorization_code_value),
         client=client)
   except AuthorizationCode.DoesNotExist:
     raise InvalidGrant(

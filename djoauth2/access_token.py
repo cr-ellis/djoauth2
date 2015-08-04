@@ -67,7 +67,7 @@ class AccessTokenAuthenticator(object):
     # In the case that the request fails to validate, this flag will
     # be returned and should be passed to the 'make_error_response' method
     # in order to comply with the specification and restrict error information.
-    expose_errors = False
+    expose_errors = True
 
     try:
       # From http://tools.ietf.org/html/rfc6750#section-1 :
@@ -131,7 +131,6 @@ class AccessTokenAuthenticator(object):
     specification, we respond with error details formatted in JSON in the body
     of the response. For more information, read the specification:
     http://tools.ietf.org/html/rfc6750#section-3.1 .
-
     :param validation_error: A
       :py:class:`djoauth2.access_token.AuthenticationError` raised by the
       :py:meth:`validate` method.

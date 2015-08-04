@@ -329,10 +329,11 @@ class AuthorizationCodeGenerator(object):
     when the user grants the Client's authorization request. The request is
     assumed to have successfully been vetted by the :py:meth:`validate` method.
     """
-    new_authorization_code, _ = AuthorizationCode.objects.get_or_create(
+
+    new_authorization_code = AuthorizationCode.objects.create(
         user=self.user,
         client=self.client,
-        redirect_uri=(self.redirect_uri if self.request_redirect_uri else None)
+        redirect_uri=(self.request_redirect_uri if self.request_redirect_uri else self.redirect_uri)
     )
     new_authorization_code.scopes = self.valid_scope_objects
     new_authorization_code.save()
