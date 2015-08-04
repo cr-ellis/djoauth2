@@ -275,7 +275,9 @@ def generate_access_token_from_authorization_code(request, client):
       new_access_token = AccessToken.objects.create(
 	  user=authorization_code.user,
 	  client=authorization_code.client,
-	  refresh_token = make_bearer_token(settings.DJOAUTH2_REFRESH_TOKEN_LENGTH))
+	  refresh_token = make_bearer_token(settings.DJOAUTH2_REFRESH_TOKEN_LENGTH),
+	  value = make_bearer_token(settings.DJOAUTH2_ACCESS_TOKEN_LENGTH))
+
   new_access_token.scopes = authorization_code.scopes.all()
   new_access_token.authorization_code = authorization_code
   new_access_token.save()
