@@ -21,13 +21,11 @@ class Client(models.Model):
   redirect_uri = models.URLField(null=False, blank=False)
   key = models.CharField(
     db_index=True,
-    default=make_client_key(settings.DJOAUTH2_CLIENT_KEY_LENGTH),
     max_length=settings.DJOAUTH2_CLIENT_KEY_LENGTH,
     unique=True,
   )
   secret = models.CharField(
     db_index=True,
-    default=make_client_secret(settings.DJOAUTH2_CLIENT_SECRET_LENGTH),
     max_length=settings.DJOAUTH2_CLIENT_SECRET_LENGTH,
     unique=True,
   )
@@ -61,8 +59,6 @@ class AuthorizationCode(models.Model):
   scopes = models.ManyToManyField(Scope, related_name='authorization_codes')
   value = models.CharField(
     db_index=True,
-    default=make_authorization_code(
-      settings.DJOAUTH2_AUTHORIZATION_CODE_LENGTH),
     max_length=settings.DJOAUTH2_AUTHORIZATION_CODE_LENGTH,
     unique=True,
   )
@@ -102,7 +98,6 @@ class AccessToken(models.Model):
   refresh_token = models.CharField(
     blank=True,
     db_index=True,
-    default=make_bearer_token(settings.DJOAUTH2_REFRESH_TOKEN_LENGTH),
     max_length=settings.DJOAUTH2_REFRESH_TOKEN_LENGTH,
     null=True,
     unique=True,
@@ -111,7 +106,6 @@ class AccessToken(models.Model):
   user = models.ForeignKey(UserModel)
   value = models.CharField(
     db_index=True,
-    default=make_bearer_token(settings.DJOAUTH2_ACCESS_TOKEN_LENGTH),
     max_length=settings.DJOAUTH2_ACCESS_TOKEN_LENGTH,
     unique=True,
   )

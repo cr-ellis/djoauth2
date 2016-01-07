@@ -1,6 +1,8 @@
 # coding: utf-8
 import json
 from base64 import b64decode
+import urllib
+from django.db import IntegrityError
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -225,7 +227,7 @@ def generate_access_token_from_authorization_code(request, client):
 
   try:
     authorization_code = AuthorizationCode.objects.get(
-        value=authorization_code_value,
+        value=urllib.unquote(authorization_code_value),
         client=client)
   except AuthorizationCode.DoesNotExist:
     raise InvalidGrant(
@@ -264,9 +266,18 @@ def generate_access_token_from_authorization_code(request, client):
     raise InvalidRequest('"redirect_uri" value must match the value from '
                          'the authorization code request')
 
-  new_access_token = AccessToken.objects.create(
-      user=authorization_code.user,
-      client=authorization_code.client)
+  try:
+      new_access_token = AccessToken.objects.create(
+          user=authorization_code.user,
+          client=authorization_code.client)
+  except IntegrityError:
+      from djoauth2.helpers import make_bearer_token
+      new_access_token = AccessToken.objects.create(
+	  user=authorization_code.user,
+	  client=authorization_code.client,
+	  refresh_token = make_bearer_token(settings.DJOAUTH2_REFRESH_TOKEN_LENGTH),
+	  value = make_bearer_token(settings.DJOAUTH2_ACCESS_TOKEN_LENGTH))
+
   new_access_token.scopes = authorization_code.scopes.all()
   new_access_token.authorization_code = authorization_code
   new_access_token.save()
